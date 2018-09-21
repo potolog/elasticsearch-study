@@ -45,7 +45,7 @@ class Elasticsearch():
 		index_info = json.loads(text)
 		return index_info
 
-	# info
+	# info 엘라스틱서치 정보 확인
 	def info(self):
 		return self.es.info()
 
@@ -58,8 +58,17 @@ class Elasticsearch():
 		result = self.es.search()
 		pprint(result)
 
+	# read_elastic
+	def read_elastic(self, index_name, query = ''):
+		body = {'query': {'match_all': {}}}
+		# if query == '':
+		# 	query = body
+		result = self.es.search(index_name, body = query)
+		pprint(result)
+
 	# get
-	def search(self, index_name, type_name, query):
+	def get(self, index_name, type_name, query):
+		body = {'query': {'match_all': {}}}
 		result = self.es.get(index_name, type_name, query = query)
 		pprint(result)
 
@@ -90,16 +99,25 @@ class Elasticsearch():
 		return result
 
 # 엘라스틱서치 객체 생성
-es = elasticsearch.Elasticsearch(servers)
+# es = elasticsearch.Elasticsearch(servers)
+es = Elasticsearch(servers)
 
 # es.indices(index_name)
 # es.cluster.health(wait_for_status = 'yellow')
 
+print('\n** elasticsearch info **')
 pprint(es.info())
 # pprint(es.search())
+
+print('\n** elasticsearch count **')
 pprint(es.count())
 
-es.search('acrm-2018.09.18', '', '{"query": {"match_all": {}}}')
-es.search('potolog', '', '{"query": {"match_all": {}}}')
+# es.search('acrm-2018.09.18', '', '{"query": {"match_all": {}}}')
+# es.search('potolog', '', '{"query": {"match_all": {}}}')
 
+print('\n** elasticsearch read_elastic **')
+es.read_elastic('potolog')
 
+print('\n** elasticsearch read_elastic **')
+body = {'query': {'match_all': {}}}
+es.read_elastic('potolog', body)
